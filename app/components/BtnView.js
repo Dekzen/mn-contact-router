@@ -4,11 +4,7 @@ import _ from 'underscore';
 const BtnView = Marionette.View.extend({
   tagName: 'button',
   className: 'btn btn-primary',
-  template: _.template('Click'),
-
-  triggers: {
-    click: 'button:click',
-  },
+  template: _.template('New Joke'),
 });
 
 export default BtnView;

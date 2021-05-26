@@ -2,18 +2,26 @@ import Marionette from 'backbone.marionette';
 import _ from 'underscore';
 import BtnView from './BtnView';
 import ResultView from './ResultView';
+import rootTemplate from '../templates/rootTemplate.jst';
+import Backbone from 'backbone';
 
-const rootTemplate = _.template(`
-    <div id="js-main-region"></div>
-    <div id="js-secondary-region"></div>
-`);
+const JokeModel = Backbone.Model.extend({
+  urlRoot: 'https://v2.jokeapi.dev/joke/Programming?type=twopart',
+});
+
+const Joke = Marionette.View.extend({
+  className: 'alert alert-dark mt-5',
+  template: _.template(`
+  <p><%= setup %></p>
+  <p><%= delivery %></p>
+  `),
+});
 
 const RootView = Marionette.View.extend({
-  className: 'container mt-5 mb-5 text-center',
   template: rootTemplate,
 
   initialize() {
-    this.count = 10;
+    this.model = new JokeModel();
   },
 
   regions: {
@@ -21,13 +29,27 @@ const RootView = Marionette.View.extend({
     previewRegion: '#js-secondary-region',
   },
 
-  childViewEvents: {
-    'button:click': 'onClick',
+  ui: {
+    btn: 'button',
   },
 
-  onClick() {
-    this.count = this.count + 1;
-    this.renderResult(this.count);
+  events: {
+    'click @ui.btn': 'fetchJoke',
+  },
+
+  modelEvents: {
+    sync: 'renderJoke',
+  },
+
+  fetchJoke() {
+    this.getUI('btn').attr('disabled', true).text('Do not hurry...');
+    console.log('clicked');
+    this.model.unset('id');
+    this.model.fetch();
+  },
+
+  renderJoke(model, res, ops) {
+    this.showChildView('previewRegion', new Joke({ model: model }));
   },
 
   renderResult(count) {
@@ -37,7 +59,9 @@ const RootView = Marionette.View.extend({
   onRender() {
     const btn = new BtnView();
     this.showChildView('btnRegion', btn);
-    this.renderResult(this.count);
+    //this.renderResult(this.count);
+    this.model.fetch();
+    //this.renderJoke();
   },
 });
 
