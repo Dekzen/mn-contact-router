@@ -1,67 +1,46 @@
-import Marionette from 'backbone.marionette';
-import _ from 'underscore';
-import BtnView from './BtnView';
-import ResultView from './ResultView';
-import rootTemplate from '../templates/rootTemplate.jst';
 import Backbone from 'backbone';
-
-const JokeModel = Backbone.Model.extend({
-  urlRoot: 'https://v2.jokeapi.dev/joke/Programming?type=twopart',
-});
-
-const Joke = Marionette.View.extend({
-  className: 'alert alert-dark mt-5',
-  template: _.template(`
-  <p><%= setup %></p>
-  <p><%= delivery %></p>
-  `),
-});
+import Marionette from 'backbone.marionette';
+import root from '../templates/root.jst';
+import TodoListView from './TodoListView';
+import FormView from './FormView';
 
 const RootView = Marionette.View.extend({
-  template: rootTemplate,
-
-  initialize() {
-    this.model = new JokeModel();
-  },
+  template: root,
 
   regions: {
-    btnRegion: '#js-main-region',
-    previewRegion: '#js-secondary-region',
+    todoRegion: '#todo-hook',
+    formRegion: '#form-hook',
   },
 
-  ui: {
-    btn: 'button',
-  },
+  collection: new Backbone.Collection([
+    { assignee: 'Scott', text: 'Write a book about Marionette' },
+    { assignee: 'Andrew', text: 'Do some coding' },
+  ]),
 
-  events: {
-    'click @ui.btn': 'fetchJoke',
-  },
-
-  modelEvents: {
-    sync: 'renderJoke',
-  },
-
-  fetchJoke() {
-    this.getUI('btn').attr('disabled', true).text('Do not hurry...');
-    console.log('clicked');
-    this.model.unset('id');
-    this.model.fetch();
-  },
-
-  renderJoke(model, res, ops) {
-    this.showChildView('previewRegion', new Joke({ model: model }));
-  },
-
-  renderResult(count) {
-    this.showChildView('previewRegion', new ResultView({ count: count }));
+  collectionEvents: {
+    add: 'itemAdded',
   },
 
   onRender() {
-    const btn = new BtnView();
-    this.showChildView('btnRegion', btn);
-    //this.renderResult(this.count);
-    this.model.fetch();
-    //this.renderJoke();
+    this.showChildView('todoRegion', new TodoListView({ collection: this.collection }));
+    this.showChildView('formRegion', new FormView());
+  },
+
+  childViewEvents: {
+    'add:todo:item': 'onAddTodoItem',
+  },
+
+  onAddTodoItem: function () {
+    this.collection.add({
+      assignee: $('#id_assignee').val(),
+      text: $('#id_text').val(),
+    });
+  },
+
+  itemAdded: function () {
+    // 6
+    $('#id_assignee').val('');
+    $('#id_text').val('');
   },
 });
 

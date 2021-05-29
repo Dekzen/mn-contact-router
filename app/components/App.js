@@ -1,11 +1,18 @@
-import Marionette from 'backbone.marionette';
+import { Application } from 'backbone.marionette';
 import RootView from './RootView';
+import TodoListView from './TodoListView';
+import Bb from 'backbone';
 
-const App = Marionette.Application.extend({
-  region: '#app',
+const App = Application.extend({
+  region: '#app-hook',
 
-  onStart() {
+  initialize(options) {
+    console.log('Initialize');
+  },
+
+  onStart(app, options) {
     this.showView(new RootView());
+    Bb.history.start();
   },
 });
 
