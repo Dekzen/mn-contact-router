@@ -1,16 +1,26 @@
 import './styles/application.css';
 import App from 'components/App';
+import ContactCollection from './models/ContactCollection';
 
-let initialData = {
-  collection: [
-    { assignee: 'Scott', text: 'Write a book about Marionette' },
-    { assignee: 'Andrew', text: 'Do some coding' },
-  ],
-
-  model: new FormModel(),
-};
+let collection = new ContactCollection([
+  {
+    firstName: 'Bob',
+    lastName: 'Brigham',
+    phoneNumber: '555-0163',
+  },
+  {
+    firstName: 'Alice',
+    lastName: 'Zarten',
+    phoneNumber: '555-0184',
+  },
+  {
+    firstName: 'Charlie',
+    lastName: 'Campbell',
+    phoneNumber: '555-0129',
+  },
+]);
 
 document.addEventListener('DOMContentLoaded', () => {
-  const app = new App();
-  app.start();
+  const ContactManager = new App();
+  ContactManager.start({ collection: collection });
 });

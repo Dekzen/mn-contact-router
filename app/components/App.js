@@ -3,14 +3,14 @@ import RootView from './RootView';
 import Bb from 'backbone';
 
 const App = Application.extend({
-  region: '#app-hook',
+  region: '#main-region',
 
   initialize(options) {
     console.log('Initialize');
   },
 
   onStart(app, options) {
-    this.showView(new RootView());
+    this.showView(new RootView(options));
     Bb.history.start();
   },
 });
