@@ -1,7 +1,5 @@
 import './styles/application.css';
 import App from 'components/App';
-import Backbone from 'backbone';
-import FormModel from './components/Form/FormModel';
 
 let initialData = {
   collection: [
@@ -14,8 +12,5 @@ let initialData = {
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new App();
-  app.start({
-    collection: new Backbone.Collection(initialData.collection),
-    model: initialData.model,
-  });
+  app.start();
 });

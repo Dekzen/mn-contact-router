@@ -1,7 +1,6 @@
 import { Application } from 'backbone.marionette';
 import RootView from './RootView';
 import Bb from 'backbone';
-import FormModel from './Form/FormModel';
 
 const App = Application.extend({
   region: '#app-hook',
@@ -11,7 +10,7 @@ const App = Application.extend({
   },
 
   onStart(app, options) {
-    this.showView(new RootView(options));
+    this.showView(new RootView());
     Bb.history.start();
   },
 });
