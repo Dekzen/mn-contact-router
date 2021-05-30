@@ -1,4 +1,9 @@
-# Webpack 2 + MarionetteJS + Babel/ES6
+# Todo tutorial with the latest Marionette.js.
+
+# TODO:
+
+- Remove list item
+- Check item as completed
 
 - Install:
   - Inside this folder run: `npm install`
