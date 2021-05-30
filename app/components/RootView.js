@@ -1,46 +1,49 @@
-import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import root from '../templates/root.jst';
 import TodoListView from './TodoListView';
-import FormView from './FormView';
+import FormView from './Form/FormView';
 
 const RootView = Marionette.View.extend({
   template: root,
 
   regions: {
-    todoRegion: '#todo-hook',
+    listRegion: '#list-hook',
     formRegion: '#form-hook',
   },
-
-  collection: new Backbone.Collection([
-    { assignee: 'Scott', text: 'Write a book about Marionette' },
-    { assignee: 'Andrew', text: 'Do some coding' },
-  ]),
 
   collectionEvents: {
     add: 'itemAdded',
   },
 
-  onRender() {
-    this.showChildView('todoRegion', new TodoListView({ collection: this.collection }));
-    this.showChildView('formRegion', new FormView());
-  },
-
   childViewEvents: {
-    'add:todo:item': 'onAddTodoItem',
+    'add:todo:item': 'addItem',
   },
 
-  onAddTodoItem: function () {
-    this.collection.add({
-      assignee: $('#id_assignee').val(),
-      text: $('#id_text').val(),
-    });
+  onRender() {
+    this.showChildView('listRegion', new TodoListView({ collection: this.collection }));
+    this.showChildView('formRegion', new FormView({ model: this.model }));
+  },
+
+  addItem(child) {
+    this.model.set(
+      {
+        assignee: child.ui.assignee.val(),
+        text: child.ui.text.val(),
+      },
+      { validate: true }
+    );
+
+    if (this.model.isValid()) {
+      let items = this.model.pick('assignee', 'text');
+      this.collection.add(items);
+    }
   },
 
   itemAdded: function () {
-    // 6
-    $('#id_assignee').val('');
-    $('#id_text').val('');
+    this.model.set({
+      assignee: '',
+      text: '',
+    });
   },
 });
 
