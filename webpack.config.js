@@ -8,7 +8,7 @@ const merge = require('webpack-merge');
 
 const webpackCommon = {
   entry: {
-    app: ['./app/initialize']
+    app: ['./src/main'],
   },
   module: {
     rules: [
@@ -17,53 +17,53 @@ const webpackCommon = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader?presets[]=es2015'
-          }
-        ]
+            loader: 'babel-loader?presets[]=es2015',
+          },
+        ],
       },
       {
         test: /\.jst$/,
         use: {
-          loader: 'underscore-template-loader'
-        }
+          loader: 'underscore-template-loader',
+        },
       },
       {
         test: /\.css$/,
         exclude: /node_modules/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: 'css-loader'
-        })
-      }
-    ]
+          use: 'css-loader',
+        }),
+      },
+    ],
   },
   output: {
     filename: 'app.js',
     path: path.join(__dirname, './public'),
-    publicPath: '/'
+    publicPath: '/',
   },
   plugins: [
     new ExtractTextPlugin('app.css'),
-    new CopyWebpackPlugin([{
-      from: './app/assets/index.html',
-      to: './index.html'
-    }]),
+    new CopyWebpackPlugin([
+      {
+        from: './src/assets/index.html',
+        to: './index.html',
+      },
+    ]),
     new webpack.ProvidePlugin({
       $: 'jquery',
-      _: 'underscore'
-    })
+      _: 'underscore',
+    }),
   ],
   resolve: {
     modules: [
       path.join(__dirname, './node_modules'),
-      path.join(__dirname, './app')
-    ]
+      path.join(__dirname, './app'),
+    ],
   },
   resolveLoader: {
-    modules: [
-      path.join(__dirname, './node_modules')
-    ]
-  }
+    modules: [path.join(__dirname, './node_modules')],
+  },
 };
 
 switch (process.env.npm_lifecycle_event) {
@@ -74,13 +74,13 @@ switch (process.env.npm_lifecycle_event) {
       devServer: {
         contentBase: path.join(__dirname, 'public'),
         compress: true,
-        port: 9000
-      }
+        port: 9000,
+      },
     });
     break;
   default:
     module.exports = merge(webpackCommon, {
-      devtool: 'source-map'
+      devtool: 'source-map',
     });
     break;
 }
